@@ -227,8 +227,7 @@ async function renderApp(req, res, next) {
         res.end();
       });
     } catch (e) {
-      const safeStack = sanitizeForLog(e && e.stack ? e.stack : e);
-      console.error(`Failed to proxy request: ${safeStack}`);
+      console.error('Failed to proxy request.');
       res.statusCode = 500;
       res.end();
     }
