@@ -86,6 +86,13 @@ function request(options, body) {
   });
 }
 
+function sanitizeForLog(value) {
+  return String(value)
+    .replace(/[\r\n]+/g, ' ')
+    .replace(/[\x00-\x1F\x7F]+/g, ' ')
+    .trim();
+}
+
 async function renderApp(req, res, next) {
   // Proxy the request to the regional server.
   const proxiedHeaders = {
@@ -202,7 +209,8 @@ async function renderApp(req, res, next) {
         },
       });
     } catch (e) {
-      console.error(`Failed to SSR: ${e.stack}`);
+      const safeStack = sanitizeForLog(e && e.stack ? e.stack : e);
+      console.error(`Failed to SSR: ${safeStack}`);
       res.statusCode = 500;
       res.end();
     }
@@ -219,7 +227,7 @@ async function renderApp(req, res, next) {
         res.end();
       });
     } catch (e) {
-      console.error(`Failed to proxy request: ${e.stack}`);
+      console.error('Failed to proxy request.');
       res.statusCode = 500;
       res.end();
     }
