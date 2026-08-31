@@ -87,7 +87,10 @@ function request(options, body) {
 }
 
 function sanitizeForLog(value) {
-  return String(value).replace(/[\r\n]+/g, ' ');
+  return String(value)
+    .replace(/[\r\n]+/g, ' ')
+    .replace(/[\x00-\x1F\x7F]+/g, ' ')
+    .trim();
 }
 
 async function renderApp(req, res, next) {
